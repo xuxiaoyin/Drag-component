@@ -10,6 +10,99 @@
 	#div3{ background: blue; left: 200px; top: 0;}
 	#div4{ background: green; left: 300px; top: 0;}
 </style>
+<script>
+	//参数:
+	//id;
+	//toDown:鼠标按下触发
+	//toUP:鼠标抬起触发
+window.onload=function(){
+	var t1=new Drag();
+	t1.init({
+		id:'div1'
+	});
+	
+	var t2=new Drag();
+	t2.init({
+		id:'div2',
+		toDown:function(){
+			document.title='您好'
+		}
+	});
+	
+	var t3=new Drag();
+	t3.init({
+		id:'div3',
+		toUp:function(){
+			document.title='早上好'
+		}
+	});
+	
+	var t4=new Drag();
+	t4.init({
+		id:'div4',
+		toDown:function(){
+			document.title='早上好'
+		},
+		toUp:function(){
+			document.title='吃早餐了吗？'
+		}
+	});
+}
+
+function Drag(){
+	this.obj=null;
+	this.disX=0;
+	this.disY=0;
+	this.setting={
+		toDown:function(){},
+		toUp:function(){}
+	};
+
+}
+
+Drag.prototype.init=function(opt){
+	var This=this;
+	extend(this.setting,opt)
+	this.obj=document.getElementById(this.setting.id);
+	this.obj.onmousedown=function(ev){
+		var ev=ev||event;
+		This.fnDown(ev);
+		This.setting.toDown();
+		
+		document.onmousemove=function(ev){
+			var ev=ev||event;
+			This.fnMove(ev);
+			
+		}
+		document.onmouseup=function(){
+			This.fnUp();
+			This.setting.toUp();
+		}
+		return false;
+	}
+}
+
+Drag.prototype.fnDown=function(ev){
+	this.disX=ev.clientX-this.obj.offsetLeft;
+	this.disY=ev.clientY-this.obj.offsetTop;
+}
+
+Drag.prototype.fnMove=function(ev){
+	this.obj.style.left=ev.clientX-this.disX+'px';
+	this.obj.style.top=ev.clientY-this.disY+'px';
+}
+
+Drag.prototype.fnUp=function(){
+	document.onmousemove=null;
+	document.onmouseup=null;
+}
+
+function extend(obj1,obj2){
+	for(var attr in obj2){
+		obj1[attr]=obj2[attr]
+	}
+};
+</script>
 </head>
 <body>
 <div id="div1"></div>
